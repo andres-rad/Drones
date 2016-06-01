@@ -34,6 +34,7 @@ Drone::Drone(ID i, const std::vector<Producto> &ps) {
 	_bateria = 100;
 	_enVuelo = false;
 	_productos = ps;
+  _posicionActual= Posicion {0,0}; //Esto de aca no es del todo necesario, pero lo puse para que no fallen los tests que mandaron elllos
 
 	//el constructor por defecto de vector lo crea vacio, lo cual es
 	_trayectoria = Secuencia<Posicion>();		//necesario para preservar el invariante
@@ -94,7 +95,7 @@ bool Drone::vueloEscalerado() const {
 	return ans && abs(ultDifY)==1 && abs(ultDifX)==1 && _enVuelo;	//faltaria testearla teniendo algo en _trayectoria
 }
 
-Secuencia<InfoVueloCruzado> Drone::vuelosCruzados(const Secuencia<Drone> &ds) {
+Secuencia <InfoVueloCruzado> Drone::vuelosCruzados(const Secuencia<Drone> &ds) {
   Secuencia<InfoVueloCruzado> res;
 
 	if (ds.empty()) return res;	//me aseguro que no se rompe lo siguiente
@@ -111,6 +112,8 @@ Secuencia<InfoVueloCruzado> Drone::vuelosCruzados(const Secuencia<Drone> &ds) {
 	}
 	*/
 	std::sort(res.begin(), res.end(), ordenCruzados);
+
+  return res; //esto no estoy seguro, pero como no habia ningun return lo puse (Teo)
 
 }
 
@@ -379,7 +382,8 @@ bool seCruzoConOtro (Drone d, const Secuencia<Drone>& ds, int i) {
 	int j = 0;
 	while (j < ds.size()){
 		if(ds[j] != d && d.vueloRealizado()[i] == ds[j].vueloRealizado()[i]) return true;
-	}
+    j++;
+  }
 
 	/*
 	 for (Drone d2 : ds) {
