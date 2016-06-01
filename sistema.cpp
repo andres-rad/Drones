@@ -166,6 +166,7 @@ void Sistema::fertilizarPorFilas() {
 		i++;
 	}
 	return;
+}
 
 void Sistema::volarYSensar(const Drone &d) {
 }
