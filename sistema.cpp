@@ -148,37 +148,9 @@ void Sistema::fertilizarPorFilas() {
 	while (i < _enjambre.size()){
 
 
-		while(_enjambre[i].bateria()>0 && _enjambre[i].productosDisponibles().size()>0 && _campo.contenido(_enjambre[i].posicionActual()) == Cultivo){
+		while(_enjambre[i].bateria()>0 && _enjambre[i].enVuelo() && hayProducto(_enjambre[i].productosDisponibles(), Fertilizante) && _campo.contenido(_enjambre[i].posicionActual()) == Cultivo){
 
-			if( estadoDelCultivo(_enjambre[i].posicionActual()) == ConPlaga){ //se fija si hay plaga
-
-				if ( hayProducto(_enjambre[i].productosDisponibles(), PlaguicidaBajoConsumo) &&  _enjambre[i].bateria() > 4 ){ //si tiene algun plaguicida y suficiente bateria para usarlo, elimina la plaga
-					_estado.parcelas[_enjambre[i].posicionActual().x][_enjambre[i].posicionActual().y] = RecienSembrado;
-					_enjambre[i].setBateria(_enjambre[i].bateria() - 5);
-					_enjambre[i].sacarProducto(PlaguicidaBajoConsumo);
-				}
-				else if (hayProducto(_enjambre[i].productosDisponibles(), Plaguicida) &&  _enjambre[i].bateria() > 9){
-					_estado.parcelas[_enjambre[i].posicionActual().x][_enjambre[i].posicionActual().y]  = RecienSembrado;
-					_enjambre[i].setBateria(_enjambre[i].bateria() - 10);
-					_enjambre[i].sacarProducto(Plaguicida);
-				}
-			}
-			else if ( estadoDelCultivo(_enjambre[i].posicionActual()) == ConMaleza && _enjambre[i].bateria() > 4 ){//si no era plaga, se fija si es maleza y le da la bateria para eliminarla
-				//chequea que haya productos. ademas, si la siguiente parcela tiene maleza (o no queda herbicida normal), usa la de largo alcance
-				if ( hayProducto(_enjambre[i].productosDisponibles(), HerbicidaLargoAlcance) && (estadoDelCultivo(Posicion {_enjambre[i].posicionActual().x, _enjambre[i].posicionActual().y - 1}) == ConMaleza || !( hayProducto(_enjambre[i].productosDisponibles(), Herbicida) ) ) ){
-					_estado.parcelas[_enjambre[i].posicionActual().x][_enjambre[i].posicionActual().y]  = RecienSembrado;
-					_estado.parcelas[_enjambre[i].posicionActual().x][_enjambre[i].posicionActual().y - 1]  = RecienSembrado;//elimina la maleza en la siguiente parecela
-					_enjambre[i].setBateria(_enjambre[i].bateria() - 5);
-					_enjambre[i].sacarProducto(HerbicidaLargoAlcance);
-				}
-				else if(hayProducto(_enjambre[i].productosDisponibles(), Herbicida)){
-					_estado.parcelas[_enjambre[i].posicionActual().x][_enjambre[i].posicionActual().y]  = RecienSembrado;
-					_enjambre[i].setBateria(_enjambre[i].bateria() - 5);
-					_enjambre[i].sacarProducto(Herbicida);
-				}
-			}
-			//si puede fertilizar
-			else if((estadoDelCultivo(_enjambre[i].posicionActual()) == RecienSembrado || estadoDelCultivo(_enjambre[i].posicionActual()) == EnCrecimiento) && (hayProducto(_enjambre[i].productosDisponibles(), Fertilizante))){
+			if((estadoDelCultivo(_enjambre[i].posicionActual()) == RecienSembrado || estadoDelCultivo(_enjambre[i].posicionActual()) == EnCrecimiento) ){
 				_estado.parcelas[_enjambre[i].posicionActual().x][_enjambre[i].posicionActual().y] = ListoParaCosechar;
 				_enjambre[i].sacarProducto(Fertilizante);
 			}
@@ -194,7 +166,6 @@ void Sistema::fertilizarPorFilas() {
 		i++;
 	}
 	return;
-}
 
 void Sistema::volarYSensar(const Drone &d) {
 }
