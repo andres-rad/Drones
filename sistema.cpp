@@ -22,6 +22,7 @@ Sistema::Sistema(const Campo &c, const Secuencia<Drone> &ds) {
 		_enjambre[i].setBateria(100);
 		_enjambre[i].borrarVueloRealizado();
 		_enjambre[i].cambiarPosicionActual(posG(*this));
+    i++;
 		//Si no están en vuelo como hago que PosiciónActual devuelva el granero, porque vuelosRealizados tiene que estar vacío.
 	}
 	int j = 0;

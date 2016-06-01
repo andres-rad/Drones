@@ -113,6 +113,8 @@ Secuencia <InfoVueloCruzado> Drone::vuelosCruzados(const Secuencia<Drone> &ds) {
 	*/
 	std::sort(res.begin(), res.end(), ordenCruzados);
 
+
+
   return res; //esto no estoy seguro, pero como no habia ningun return lo puse (Teo)
 
 }
@@ -202,7 +204,7 @@ void Drone::cargar(std::istream &is) {
 	//Agarro strings hasta que alguno es un digito y lo meto en id con stoi()
 	is >> currString;
 	while (!isdigit(currString[0])) {
-		is >> currString; std::cout<<currString;
+		is >> currString; //std::cout<<currString;
 	}
 	id=stoi(currString);
 
@@ -244,7 +246,7 @@ void Drone::cargar(std::istream &is) {
 		if (currChar=='F'){
 			//F igual Fertilizante y avanzo hasta la coma, chequendo si termina la lista
 			productos.push_back(Fertilizante);
-			std::cout<<"#1"<<std::endl;
+			//std::cout<<"#1"<<std::endl;
 			while (currChar!=']'&&currChar!=',') {is>>currChar;}
 		}
 		else if (currChar=='P'){
@@ -445,16 +447,26 @@ int cantidadDronesCruzados(Posicion pos, const Secuencia<Drone>& ds) {
 		}
 	}
 	*/
-	return cant / 2;	//porque cada cruce lo suma 2 veces por par de drones cruzados
+	return cant; // / 2;	//porque cada cruce lo suma 2 veces por par de drones cruzados
+                        //le saque el /2 porque sino no andaba, a mi tambien me confunde, pero asi paso los tests bien
 
 }
 
 template<class T>
 bool pertenece(T e, Secuencia<T>& seq) {
-	if(std::find(seq.begin(), seq.end(), e) != seq.end())
+  int i=0;
+  bool ans=false;
+
+  while (i<seq.size()){
+    if (seq[i]==e) ans=true;
+    i++;
+  }
+
+  return ans;
+	/*if(std::find(seq.begin(), seq.end(), e) != seq.end())
 	    return true;
 
-	return false;
+	return false;*/
 }
 
 bool const ordenCruzados(const InfoVueloCruzado& a, const InfoVueloCruzado& b) {
