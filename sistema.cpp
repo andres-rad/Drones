@@ -1,4 +1,5 @@
 #include "sistema.h"
+#include "aux.h"
 #include <algorithm>
 
 //Prototipos
@@ -8,7 +9,6 @@ bool posVacia(const Sistema &s, Posicion p);
 Posicion suma(Posicion p, Posicion q);
 Posicion posG(const Sistema &s);
 bool hayProducto(const Secuencia<Producto>& ps, Producto p);
-Secuencia<Posicion> movimientos();
 //
 
 Sistema::Sistema() {
@@ -19,12 +19,14 @@ Sistema::Sistema(const Campo &c, const Secuencia<Drone> &ds) {
 	_enjambre = ds;
 	_estado = Grilla<EstadoCultivo> (c.dimensiones());
 	int i = 0;
-	while(i < _enjambre.size()){
+	/*while(i < _enjambre.size()){
 		_enjambre[i].setBateria(100);
 		_enjambre[i].borrarVueloRealizado();
 		_enjambre[i].cambiarPosicionActual(posG(*this));
+    i++;
 		//Si no están en vuelo como hago que PosiciónActual devuelva el granero, porque vuelosRealizados tiene que estar vacío.
-	}
+	}*/
+  //todo eso no hace falta por los requiere
 	int j = 0;
 	while( j < c.dimensiones().ancho ){
 		int i = 0;
@@ -77,6 +79,7 @@ void Sistema::seVinoLaMaleza(const Secuencia<Posicion> &ps) {
 }
 
 void Sistema::seExpandePlaga() {
+  Grilla<EstadoCultivo> estadoTemp = _estado;
   int i = 0;
 
 	while(i < _campo.dimensiones().ancho){
@@ -85,25 +88,27 @@ void Sistema::seExpandePlaga() {
 			if(_estado.parcelas[i][j] == ConPlaga){
 
 				if( j - 1 >= 0 && _campo.contenido(Posicion { i, j-1}) == Cultivo){
-					_estado.parcelas[i][j-1] = ConPlaga;
+					estadoTemp.parcelas[i][j-1] = ConPlaga;
 				}
 
 				if ( j != _campo.dimensiones().largo - 1 && _campo.contenido(Posicion { i, j+1}) == Cultivo){
-					_estado.parcelas[i][j+1] = ConPlaga;
+					estadoTemp.parcelas[i][j+1] = ConPlaga;
 				}
 
 				if (i - 1 >= 0 && _campo.contenido(Posicion { i-1, j}) == Cultivo) {
-					_estado.parcelas[i-1][j] = ConPlaga;
+					estadoTemp.parcelas[i-1][j] = ConPlaga;
 				}
 
 				if (i != _campo.dimensiones().ancho - 1 && _campo.contenido(Posicion { i+1, j}) == Cultivo){
-					_estado.parcelas[i+1][j] = ConPlaga;
+					estadoTemp.parcelas[i+1][j] = ConPlaga;
 				}
 			}
 			j++;
 		}
 		i++;
 	}
+
+  _estado=estadoTemp;
   return;
 }
 
@@ -111,21 +116,34 @@ void Sistema::despegar(const Drone &d) {
   Secuencia<Posicion> posicionesActuales;
 	int i = 0;
 	int despegado = 0;
-	Secuencia<Posicion> adyacentes = movimientos();
+  int indice=buscarDrone(*this, d);
+	Posicion adyacentes[] = {Posicion {-1, 0}, Posicion {1, 0}, Posicion {0, -1}, Posicion {0, 1} };
 	Posicion granero = posG(*this);
 
-	while (i < movimientos.size() && !despegado){
+	while (i < 4 && !despegado){
 		if(enRango(*this, suma(granero, adyacentes[i])) && posVacia(*this, suma(granero, adyacentes[i]))){
 		//Aca hay que usar moverA que puede que no está claro que quieren que haga.
+    _enjambre[indice].moverA(suma(granero, adyacentes[i]));
 		despegado++;
 		}
-		return;
+		i++;
 	}
+  return ;
 }
 
 bool Sistema::listoParaCosechar() const {
-  //Completar Teo
-    return false;
+    int listas = 0;
+    int total = _campo.dimensiones().ancho * _campo.dimensiones().largo - 2;
+    int i = 0;
+    while (i < _campo.dimensiones().ancho * _campo.dimensiones().largo){
+        Posicion pos {i % _campo.dimensiones().ancho, i / _campo.dimensiones().ancho};
+        //std::cout<<"pos x "<<pos.x<<"  pos y  "<<pos.y<<"  i  "<<i<< std::endl;
+        if (_campo.contenido(pos)==Cultivo &&
+            _estado.parcelas[pos.x][pos.y] == ListoParaCosechar) listas++;
+        i++;
+    }
+    //std::cout<<"Listos para cos  "<<listas<<"  de  "<<total<<std::endl;
+    return 10 * listas >= 9 * total;
 }
 
 void Sistema::aterrizarYCargarBaterias(Carga b) {
@@ -148,37 +166,9 @@ void Sistema::fertilizarPorFilas() {
 	while (i < _enjambre.size()){
 
 
-		while(_enjambre[i].bateria()>0 && _enjambre[i].productosDisponibles().size()>0 && _campo.contenido(_enjambre[i].posicionActual()) == Cultivo){
+		while(_enjambre[i].bateria()>0 && _enjambre[i].enVuelo() && hayProducto(_enjambre[i].productosDisponibles(), Fertilizante) && _campo.contenido(_enjambre[i].posicionActual()) == Cultivo){
 
-			if( estadoDelCultivo(_enjambre[i].posicionActual()) == ConPlaga){ //se fija si hay plaga
-
-				if ( hayProducto(_enjambre[i].productosDisponibles(), PlaguicidaBajoConsumo) &&  _enjambre[i].bateria() > 4 ){ //si tiene algun plaguicida y suficiente bateria para usarlo, elimina la plaga
-					_estado.parcelas[_enjambre[i].posicionActual().x][_enjambre[i].posicionActual().y] = RecienSembrado;
-					_enjambre[i].setBateria(_enjambre[i].bateria() - 5);
-					_enjambre[i].sacarProducto(PlaguicidaBajoConsumo);
-				}
-				else if (hayProducto(_enjambre[i].productosDisponibles(), Plaguicida) &&  _enjambre[i].bateria() > 9){
-					_estado.parcelas[_enjambre[i].posicionActual().x][_enjambre[i].posicionActual().y]  = RecienSembrado;
-					_enjambre[i].setBateria(_enjambre[i].bateria() - 10);
-					_enjambre[i].sacarProducto(Plaguicida);
-				}
-			}
-			else if ( estadoDelCultivo(_enjambre[i].posicionActual()) == ConMaleza && _enjambre[i].bateria() > 4 ){//si no era plaga, se fija si es maleza y le da la bateria para eliminarla
-				//chequea que haya productos. ademas, si la siguiente parcela tiene maleza (o no queda herbicida normal), usa la de largo alcance
-				if ( hayProducto(_enjambre[i].productosDisponibles(), HerbicidaLargoAlcance) && (estadoDelCultivo(Posicion {_enjambre[i].posicionActual().x, _enjambre[i].posicionActual().y - 1}) == ConMaleza || !( hayProducto(_enjambre[i].productosDisponibles(), Herbicida) ) ) ){
-					_estado.parcelas[_enjambre[i].posicionActual().x][_enjambre[i].posicionActual().y]  = RecienSembrado;
-					_estado.parcelas[_enjambre[i].posicionActual().x][_enjambre[i].posicionActual().y - 1]  = RecienSembrado;//elimina la maleza en la siguiente parecela
-					_enjambre[i].setBateria(_enjambre[i].bateria() - 5);
-					_enjambre[i].sacarProducto(HerbicidaLargoAlcance);
-				}
-				else if(hayProducto(_enjambre[i].productosDisponibles(), Herbicida)){
-					_estado.parcelas[_enjambre[i].posicionActual().x][_enjambre[i].posicionActual().y]  = RecienSembrado;
-					_enjambre[i].setBateria(_enjambre[i].bateria() - 5);
-					_enjambre[i].sacarProducto(Herbicida);
-				}
-			}
-			//si puede fertilizar
-			else if((estadoDelCultivo(_enjambre[i].posicionActual()) == RecienSembrado || estadoDelCultivo(_enjambre[i].posicionActual()) == EnCrecimiento) && (hayProducto(_enjambre[i].productosDisponibles(), Fertilizante))){
+			if((estadoDelCultivo(_enjambre[i].posicionActual()) == RecienSembrado || estadoDelCultivo(_enjambre[i].posicionActual()) == EnCrecimiento) ){
 				_estado.parcelas[_enjambre[i].posicionActual().x][_enjambre[i].posicionActual().y] = ListoParaCosechar;
 				_enjambre[i].sacarProducto(Fertilizante);
 			}
@@ -197,59 +187,6 @@ void Sistema::fertilizarPorFilas() {
 }
 
 void Sistema::volarYSensar(const Drone &d) {
-  Secuencia<Posicion> mov = movimientos();
-  int i = 0;
-  bool movido = false;
-  Posicion seMueveA;
-  //Encuentro una parcela libre y lo muevo ahi.
-  while(i < mov.size() && !movido){
-    seMueveA = suma(posicionActual(d), mov[i]);
-    if(enRango(*this, seMueveA) && posVacia(*this, seMueveA)){
-      d.moverA(seMueveA);
-      d.setBateria(d.bateria() - 1);
-      movido = true;
-    }
-    i++;
-  }
-  //Me fijo si esta sensado o hago lo que tenga que hacer.
-  EstadoCultivo comoEsta = _estado.parcela[seMueveA.x][seMueveA.y];
-
-  if(_campo.parcela.contenido(seMueveA) != Cultivo || comoEsta == NoSensado){
-    _estado.parcela[seMueveA.x][seMueveA.y] = RecienSembrado;
-  }
-  else {
-    if((comoEsta == RecienSembrado || comoEsta == EnCrecimiento) && hayProducto(d.productosDisponibles(), Fertilizante)){
-      comoEsta = EnCrecimiento;
-      d.sacarProducto(Fertilizante);
-    }
-    else if(comoEsta == ConPlaga && hayProducto(d.productosDisponibles(), PlaguicidaBajoConsumo) && d.bateria() >= 5 ){
-      comoEsta = RecienSembrado;
-      d.setBateria(d.bateria() - 5);
-      d.sacarProducto(PlaguicidaBajoConsumo);
-    }
-    else if(comoEsta == ConPlaga && hayProducto(d.productosDisponibles(), Plaguicida) && d.bateria() >= 10){
-      comoEsta = RecienSembrado;
-      d.setBateria(d.bateria() - 10);
-      d.sacarProducto(Plaguicida);
-    }
-    else if(comoEsta == ConMaleza && hayProducto(d.productosDisponibles(), Herbicida) && d.bateria() >= 5){
-      comoEsta = RecienSembrado;
-      d.setBateria(d.bateria() - 5);
-      d.sacarProducto(Herbicida);
-    }
-    else if(comoEsta == ConMaleza && hayProducto(d.productosDisponibles(), HerbicidaLargoAlcance) && d.bateria >= 5){
-      unsigned int j = 0;
-      while(j < mov.size()){
-        Posicion afectada = suma(seMueveA, mov[i]);
-        if(_estado.parcela[afectada.x][afectada.y] == ConMaleza)
-          _estado.parcela[afectada.x][afectada.y] == RecienSembrado;
-        j++;
-      }
-      d.setBateria(d.bateria() - 5);
-      d.sacarProducto(HerbicidaLargoAlcance);
-    }
-  }
-  return;
 }
 
 void Sistema::mostrar(std::ostream &os) const {
@@ -320,10 +257,4 @@ bool hayProducto(const Secuencia<Producto>& ps, Producto p){
 		i++;
 	}
 	return b;
-}
-
-Secuencia<Posicion> movimientos(){
-  Secuencia<Posicion> mov(4);
-  mov = {Posicion {-1, 0}, Posicion {1, 0}, Posicion {0, -1}, Posicion {0, 1} };
-  return mov;
 }
