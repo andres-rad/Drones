@@ -7,6 +7,7 @@ int buscarDrone (const Sistema & s, const Drone & d){
 
   while (ans==-1 && i<s.enjambreDrones().size()){
     if (d==s.enjambreDrones()[i]) ans=i;
+    i++;
   }
 
   return ans;
