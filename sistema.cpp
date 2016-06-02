@@ -18,13 +18,14 @@ Sistema::Sistema(const Campo &c, const Secuencia<Drone> &ds) {
 	_enjambre = ds;
 	_estado = Grilla<EstadoCultivo> (c.dimensiones());
 	int i = 0;
-	while(i < _enjambre.size()){
+	/*while(i < _enjambre.size()){
 		_enjambre[i].setBateria(100);
 		_enjambre[i].borrarVueloRealizado();
 		_enjambre[i].cambiarPosicionActual(posG(*this));
     i++;
 		//Si no están en vuelo como hago que PosiciónActual devuelva el granero, porque vuelosRealizados tiene que estar vacío.
-	}
+	}*/
+  //todo eso no hace falta por los requiere
 	int j = 0;
 	while( j < c.dimensiones().ancho ){
 		int i = 0;
@@ -77,6 +78,7 @@ void Sistema::seVinoLaMaleza(const Secuencia<Posicion> &ps) {
 }
 
 void Sistema::seExpandePlaga() {
+  Grilla<EstadoCultivo> estadoTemp = _estado;
   int i = 0;
 
 	while(i < _campo.dimensiones().ancho){
@@ -85,25 +87,27 @@ void Sistema::seExpandePlaga() {
 			if(_estado.parcelas[i][j] == ConPlaga){
 
 				if( j - 1 >= 0 && _campo.contenido(Posicion { i, j-1}) == Cultivo){
-					_estado.parcelas[i][j-1] = ConPlaga;
+					estadoTemp.parcelas[i][j-1] = ConPlaga;
 				}
 
 				if ( j != _campo.dimensiones().largo - 1 && _campo.contenido(Posicion { i, j+1}) == Cultivo){
-					_estado.parcelas[i][j+1] = ConPlaga;
+					estadoTemp.parcelas[i][j+1] = ConPlaga;
 				}
 
 				if (i - 1 >= 0 && _campo.contenido(Posicion { i-1, j}) == Cultivo) {
-					_estado.parcelas[i-1][j] = ConPlaga;
+					estadoTemp.parcelas[i-1][j] = ConPlaga;
 				}
 
 				if (i != _campo.dimensiones().ancho - 1 && _campo.contenido(Posicion { i+1, j}) == Cultivo){
-					_estado.parcelas[i+1][j] = ConPlaga;
+					estadoTemp.parcelas[i+1][j] = ConPlaga;
 				}
 			}
 			j++;
 		}
 		i++;
 	}
+
+  _estado=estadoTemp;
   return;
 }
 
