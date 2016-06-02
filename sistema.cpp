@@ -9,6 +9,7 @@ bool posVacia(const Sistema &s, Posicion p);
 Posicion suma(Posicion p, Posicion q);
 Posicion posG(const Sistema &s);
 bool hayProducto(const Secuencia<Producto>& ps, Producto p);
+Secuencia<Posicion> movimientos();
 //
 
 Sistema::Sistema() {
@@ -187,6 +188,60 @@ void Sistema::fertilizarPorFilas() {
 }
 
 void Sistema::volarYSensar(const Drone &d) {
+  Secuencia<Posicion> mov = movimientos();
+  int i = 0;
+  bool movido = false;
+  Posicion seMueveA;
+  int indice=buscarDrone(*this, d);
+  //Encuentro una parcela libre y lo muevo ahi.
+  while(i < mov.size() && !movido){
+    seMueveA = suma(_enjambre[indice].posicionActual(), mov[i]);
+    if(enRango(*this, seMueveA) && posVacia(*this, seMueveA)){
+      _enjambre[indice].moverA(seMueveA);
+      _enjambre[indice].setBateria(_enjambre[indice].bateria() - 1);
+      movido = true;
+    }
+    i++;
+  }
+  //Me fijo si esta sensado o hago lo que tenga que hacer.
+  EstadoCultivo comoEsta = _estado.parcelas[seMueveA.x][seMueveA.y];
+
+  if(_campo.contenido(seMueveA) != Cultivo || comoEsta == NoSensado){
+    _estado.parcelas[seMueveA.x][seMueveA.y] = RecienSembrado;
+  }
+  else {
+    if((comoEsta == RecienSembrado || comoEsta == EnCrecimiento) && hayProducto(_enjambre[indice].productosDisponibles(), Fertilizante)){
+      comoEsta = EnCrecimiento;
+      _enjambre[indice].sacarProducto(Fertilizante);
+    }
+    else if(comoEsta == ConPlaga && hayProducto(_enjambre[indice].productosDisponibles(), PlaguicidaBajoConsumo) && _enjambre[indice].bateria() >= 5 ){
+      comoEsta = RecienSembrado;
+      _enjambre[indice].setBateria(_enjambre[indice].bateria() - 5);
+      _enjambre[indice].sacarProducto(PlaguicidaBajoConsumo);
+    }
+    else if(comoEsta == ConPlaga && hayProducto(_enjambre[indice].productosDisponibles(), Plaguicida) && _enjambre[indice].bateria() >= 10){
+      comoEsta = RecienSembrado;
+      _enjambre[indice].setBateria(_enjambre[indice].bateria() - 10);
+      _enjambre[indice].sacarProducto(Plaguicida);
+    }
+    else if(comoEsta == ConMaleza && hayProducto(_enjambre[indice].productosDisponibles(), Herbicida) && _enjambre[indice].bateria() >= 5){
+      comoEsta = RecienSembrado;
+      _enjambre[indice].setBateria(_enjambre[indice].bateria() - 5);
+      _enjambre[indice].sacarProducto(Herbicida);
+    }
+    else if(comoEsta == ConMaleza && hayProducto(_enjambre[indice].productosDisponibles(), HerbicidaLargoAlcance) && _enjambre[indice].bateria() >= 5){
+      unsigned int j = 0;
+      while(j < mov.size()){
+        Posicion afectada = suma(seMueveA, mov[i]);
+        if(_estado.parcelas[afectada.x][afectada.y] == ConMaleza)
+          _estado.parcelas[afectada.x][afectada.y] == RecienSembrado;
+        j++;
+      }
+      _enjambre[indice].setBateria(_enjambre[indice].bateria() - 5);
+      _enjambre[indice].sacarProducto(HerbicidaLargoAlcance);
+    }
+  }
+  return;
 }
 
 void Sistema::mostrar(std::ostream &os) const {
@@ -257,4 +312,10 @@ bool hayProducto(const Secuencia<Producto>& ps, Producto p){
 		i++;
 	}
 	return b;
+}
+
+Secuencia<Posicion> movimientos(){
+  Secuencia<Posicion> mov(4);
+  mov = {Posicion {-1, 0}, Posicion {1, 0}, Posicion {0, -1}, Posicion {0, 1} };
+  return mov;
 }
