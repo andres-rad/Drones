@@ -69,7 +69,7 @@ bool Drone::vueloEscalerado() const {
 	int ultDifX=1;
 	int ultDifY=1;
 	if (_trayectoria.size()>2){
-		int i=0;
+		unsigned int i=0;
 		ultDifX=_trayectoria[0].x - _trayectoria[2].x;
 		ultDifY=_trayectoria[0].y - _trayectoria[2].y;
 
@@ -102,7 +102,7 @@ Secuencia <InfoVueloCruzado> Drone::vuelosCruzados(const Secuencia<Drone> &ds) {
 
 
 	Secuencia<Posicion> posCruzadas = posConCruces(ds);
-	int i = 0;
+	unsigned int i = 0;
 	while ( i < posCruzadas.size()){
 		res.push_back(InfoVueloCruzado{posCruzadas[i], cantidadDronesCruzados(posCruzadas[i], ds)});
 		i++;
@@ -163,7 +163,7 @@ void Drone::guardar(std::ostream &os) const {
 	// Trayectoria
 	os << "[";
 	if (_trayectoria.size() > 0)	{		//tira segfault si intenta _trayectoria[0] cuando es vacio
-		for (int i = 0; i < _trayectoria.size() - 1; i++) {
+		for (unsigned int i = 0; i < _trayectoria.size() - 1; i++) {
 			os << "[" << _trayectoria[i].x << "," << _trayectoria[i].y << "],";
 		}
 		os << "[" << _trayectoria[_trayectoria.size() - 1].x << "," << _trayectoria[_trayectoria.size() - 1].y << "]";
@@ -172,7 +172,7 @@ void Drone::guardar(std::ostream &os) const {
 
 	//Productos
 	os << "[";
-	for (int i = 0; i < _productos.size() - 1; i++) {
+	for (unsigned int i = 0; i < _productos.size() - 1; i++) {
 		os << _productos[i] << ",";
 	}
 	os << _productos[_productos.size() -1 ] << "]";
@@ -327,7 +327,7 @@ void Drone::cambiarPosicionActual(const Posicion p) {
 }
 
 void Drone::sacarProducto(const Producto p) {
-  int i = 0;
+  unsigned int i = 0;
 	int listo = 1;
 
 	while(i < _productos.size() && listo){
@@ -381,7 +381,7 @@ std::ostream &operator<<(std::ostream &os, const Drone &d) {
 //Auxiliares
 bool seCruzoConOtro (Drone d, const Secuencia<Drone>& ds, int i) {
 
-	int j = 0;
+	unsigned int j = 0;
 	while (j < ds.size()){
 		if(ds[j] != d && d.vueloRealizado()[i] == ds[j].vueloRealizado()[i]) return true;
     j++;
@@ -399,9 +399,9 @@ bool seCruzoConOtro (Drone d, const Secuencia<Drone>& ds, int i) {
 Secuencia<Posicion> posConCruces(const Secuencia<Drone>& ds) {
 	Secuencia<Posicion> res;
 
-	int i = 0;
+	unsigned int i = 0;
 	while(i < ds.size()){
-		int j = 0;
+		unsigned int j = 0;
 		while (j < ds[i].vueloRealizado().size()){
 			if(seCruzoConOtro(ds[i], ds, j)) {
 				Posicion pos = ds[i].vueloRealizado()[j];
@@ -428,9 +428,9 @@ Secuencia<Posicion> posConCruces(const Secuencia<Drone>& ds) {
 
 int cantidadDronesCruzados(Posicion pos, const Secuencia<Drone>& ds) {
 	int cant = 0;
-	int i = 0;
+	unsigned int i = 0;
 	while(i < ds.size()){
-		int j = 0;
+		unsigned int j = 0;
 		while(j < ds[i].vueloRealizado().size()){
 			if (ds[i].vueloRealizado()[j] == pos && seCruzoConOtro(ds[i], ds, j)) cant ++;
 			j++;
@@ -454,7 +454,7 @@ int cantidadDronesCruzados(Posicion pos, const Secuencia<Drone>& ds) {
 
 template<class T>
 bool pertenece(T e, Secuencia<T>& seq) {
-  int i=0;
+  unsigned int i=0;
   bool ans=false;
 
   while (i<seq.size()){
@@ -477,7 +477,7 @@ template <class T>
 bool mismos(Secuencia<T> seq1, Secuencia<T> seq2) {
 	if (seq1.size() != seq2.size())	return false;
 
-	int i = 0;
+	unsigned int i = 0;
 
 	while(i < seq1.size()){
 		if(cuenta(seq1[i], seq1) != cuenta(seq1[i], seq2)) return false;
@@ -495,7 +495,7 @@ bool mismos(Secuencia<T> seq1, Secuencia<T> seq2) {
 template <class T>
 int cuenta(T e, Secuencia<T> seq) {
 	int contador = 0;
-	int i = 0;
+	unsigned int i = 0;
 
 	while(i < seq.size()){
 		if(seq[i] == e) contador ++;
