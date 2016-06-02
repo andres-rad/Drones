@@ -118,14 +118,14 @@ void Sistema::despegar(const Drone &d) {
 	int i = 0;
 	int despegado = 0;
   int indice=buscarDrone(*this, d);
-	Posicion adyacentes[] = {Posicion {-1, 0}, Posicion {1, 0}, Posicion {0, -1}, Posicion {0, 1} };
+	Secuencia<Posicion> adyacentes = movimientos();
 	Posicion granero = posG(*this);
 
 	while (i < 4 && !despegado){
 		if(enRango(*this, suma(granero, adyacentes[i])) && posVacia(*this, suma(granero, adyacentes[i]))){
 		//Aca hay que usar moverA que puede que no está claro que quieren que haga.
-    _enjambre[indice].moverA(suma(granero, adyacentes[i]));
-		despegado++;
+   			_enjambre[indice].moverA(suma(granero, adyacentes[i]));
+			despegado++;
 		}
 		i++;
 	}
@@ -148,7 +148,7 @@ bool Sistema::listoParaCosechar() const {
 }
 
 void Sistema::aterrizarYCargarBaterias(Carga b) {
-  int i = 0;
+  unsigned int i = 0;
 	while (i < _enjambre.size()){
 		if(_enjambre[i].bateria() < b){
 			_enjambre[i].borrarVueloRealizado();
@@ -162,7 +162,7 @@ void Sistema::aterrizarYCargarBaterias(Carga b) {
 }
 
 void Sistema::fertilizarPorFilas() {
-	int i = 0;
+	unsigned int i = 0;
 
 	while (i < _enjambre.size()){
 
@@ -189,10 +189,10 @@ void Sistema::fertilizarPorFilas() {
 
 void Sistema::volarYSensar(const Drone &d) {
   Secuencia<Posicion> mov = movimientos();
-  int i = 0;
+  unsigned int i = 0;
   bool movido = false;
   Posicion seMueveA;
-  int indice=buscarDrone(*this, d);
+  int indice = buscarDrone(*this, d);
   //Encuentro una parcela libre y lo muevo ahi.
   while(i < mov.size() && !movido){
     seMueveA = suma(_enjambre[indice].posicionActual(), mov[i]);
@@ -271,7 +271,7 @@ bool enRango(const Sistema &s, Posicion p){
 
 bool posVacia(const Sistema &s, Posicion p){
 	bool res = true;
-	int i = 0;
+	unsigned int i = 0;
 	while( i < s.enjambreDrones().size()){
 		if(s.enjambreDrones()[i].posicionActual() == p){
 			res = false;
@@ -303,7 +303,7 @@ Posicion posG(const Sistema & s){
 }
 
 bool hayProducto(const Secuencia<Producto>& ps, Producto p){
-	int i = 0;
+	unsigned int i = 0;
 	bool b = false;
 	while(i < ps.size() && !b){
 		if(ps[i] == p){
