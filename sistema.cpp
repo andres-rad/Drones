@@ -254,7 +254,23 @@ void Sistema::cargar(std::istream &is) {
 }
 
 bool Sistema::operator==(const Sistema &otroSistema) const {
-    return false;
+    if (!(_campo == otroSistema.campo()))
+        return false;
+
+    for (int i = 0; i < _campo.dimensiones().ancho; i++) {
+        for (int j = 0; j < _campo.dimensiones().largo; j++) {
+            Posicion pos{ i, j };
+            if (_campo.contenido(pos) == Cultivo &&
+            estadoDelCultivo(pos) != otroSistema.estadoDelCultivo(pos)) {
+                return false;
+            }
+        }
+    }
+
+    if (!(_enjambre == otroSistema.enjambreDrones()))
+        return false;
+
+    return true;
 }
 
 std::ostream &operator<<(std::ostream &os, const Sistema &s) {
