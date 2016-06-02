@@ -1,4 +1,5 @@
 #include "sistema.h"
+#include "aux.h"
 #include <algorithm>
 
 //Prototipos
@@ -115,16 +116,19 @@ void Sistema::despegar(const Drone &d) {
   Secuencia<Posicion> posicionesActuales;
 	int i = 0;
 	int despegado = 0;
+  int indice=buscarDrone(*this, d);
 	Posicion adyacentes[] = {Posicion {-1, 0}, Posicion {1, 0}, Posicion {0, -1}, Posicion {0, 1} };
 	Posicion granero = posG(*this);
 
 	while (i < 4 && !despegado){
 		if(enRango(*this, suma(granero, adyacentes[i])) && posVacia(*this, suma(granero, adyacentes[i]))){
 		//Aca hay que usar moverA que puede que no está claro que quieren que haga.
+    _enjambre[indice].moverA(suma(granero, adyacentes[i]));
 		despegado++;
 		}
-		return;
+		i++;
 	}
+  return ;
 }
 
 bool Sistema::listoParaCosechar() const {
