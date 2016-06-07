@@ -250,6 +250,11 @@ void Sistema::mostrar(std::ostream &os) const {
 }
 
 void Sistema::guardar(std::ostream &os) const {
+os<<"{ S ";
+_campo.guardar(os);
+os<<_enjambre;
+os<<_estado.parcelas<<std::endl;
+
 }
 
 void Sistema::cargar(std::istream &is) {

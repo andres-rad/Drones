@@ -57,7 +57,7 @@ void Campo::guardar(std::ostream &os) const {
   //si su ofstream está open
 
   os << "{ C";															//campo
-  os << " [" << _dimension.ancho << "," << _dimension.largo << "]";	//su dimension
+  os << " [" << _dimension.ancho << "," << _dimension.largo << "] ";	//su dimension
   /* os << " [";															//sus parcelas */
 
   os<<_grilla.parcelas;
@@ -94,17 +94,19 @@ void Campo::cargar(std::istream &is) {
   	}
 
   	int currAncho, currLargo;
-  	is >> currAncho >> currChar >> currLargo;
+  	is >> currAncho >> currChar >> currLargo>>currChar;
 
   	Dimension currDim;
   	currDim.ancho = currAncho;
   	currDim.largo = currLargo;
 
-  	Grilla<Parcela> grillTemp(currDim);
+  	Grilla<Parcela> grillTemp(Dimension {0,0});
 
   	int i = 0, j = 0;
 
 	is>>grillTemp.parcelas;
+	
+std::cout<<"hol"<<grillTemp.parcelas.size()<<std::endl;
 /*
   	while (currChar != '[') {
   		is >> currChar;

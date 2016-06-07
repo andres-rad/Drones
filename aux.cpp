@@ -31,6 +31,11 @@ std::istream &operator>>(std::istream &is,  Drone &d){
   return is;
 }
 
+std::ostream &operator<<(std::ostream &os,  Drone &d){
+	d.guardar(os);
+	return os;
+}
+
 std::istream &operator>>(std::istream &is, Parcela &p){
 	std::string str;
 	str = getLineTwo(is, ']', ',');
