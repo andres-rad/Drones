@@ -1,5 +1,4 @@
 #include "campo.h"
-#include "tipos.h"
 #include "aux.h"
 #include <iostream>
 
@@ -106,7 +105,7 @@ void Campo::cargar(std::istream &is) {
 
 	is>>grillTemp.parcelas;
 	
-std::cout<<"hol"<<grillTemp.parcelas.size()<<std::endl;
+
 /*
   	while (currChar != '[') {
   		is >> currChar;
@@ -145,7 +144,7 @@ std::cout<<"hol"<<grillTemp.parcelas.size()<<std::endl;
   	_dimension = currDim;
   	_grilla = grillTemp;
 
-	this->mostrar(std::cout);
+
 
 }
 

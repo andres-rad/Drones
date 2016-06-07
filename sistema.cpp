@@ -1,5 +1,4 @@
 #include "sistema.h"
-#include "tipos.h"
 #include "aux.h"
 
 #include <algorithm>
@@ -247,6 +246,8 @@ void Sistema::volarYSensar(const Drone &d) {
 }
 
 void Sistema::mostrar(std::ostream &os) const {
+this->guardar(os);
+return;
 }
 
 void Sistema::guardar(std::ostream &os) const {
@@ -260,14 +261,15 @@ os<<_estado.parcelas<<std::endl;
 void Sistema::cargar(std::istream &is) {
   char currChar;
 
-/* std::cout<<"jere"; */
 
+	std::cout<<"jere";
 	is>>currChar;
 
   while (currChar!='S'){
     is>>currChar;
-	/* std::cout<<"je"; */
+
   }
+
 
   _campo.cargar(is);
 

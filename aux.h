@@ -12,7 +12,7 @@ std::string getLineTwo (std::istream &is, char del1, char del2);
 
 std::istream &operator>>(std::istream &is,  Drone &d);//Para leer Drone
 
-std::ostream &operator<<(std::ostream &os,  Drone &d);//Para guardar Drone
+//std::ostream &operator<<(std::ostream &os,  Drone &d);//Para guardar Drone
 
 std::istream &operator>>(std::istream &is,  Campo &c); //Para leer Campo
 
@@ -28,7 +28,8 @@ inline std::ostream& operator<<(std::ostream &os, const std::vector <T> &v){
 		os<<v[i]<<',';
 		i++;
 	}
-	os<<v[i]<<']';
+	if (v.size()>0) os<<v[i];
+	os<<']';
 
 	return os;
 
@@ -41,9 +42,9 @@ inline std::istream &operator>>(std::istream &is,   std::vector <T> &sec){
 
   T temp;
   sec=Secuencia <T> (0);
-std::cout<<"hol "<<currChar<<std::endl;
+
   while (currChar!=']'){
-	std::cout<<"He";
+
     is>>temp;
     sec.push_back(temp);
     is>>currChar;

@@ -374,8 +374,14 @@ bool Drone::operator!=(const Drone & otroDrone) const {
 }
 
 std::ostream &operator<<(std::ostream &os, const Drone &d) {
-    return os;
+
+	d.guardar(os);
+
+	return os;
 }
+
+
+
 
 
 //Auxiliares

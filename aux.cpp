@@ -1,6 +1,4 @@
 #include "aux.h"
-#include "tipos.h"
-#include "drone.h"
 
 
 int buscarDrone (const Sistema & s, const Drone & d){
@@ -31,10 +29,12 @@ std::istream &operator>>(std::istream &is,  Drone &d){
   return is;
 }
 
-std::ostream &operator<<(std::ostream &os,  Drone &d){
+/*std::ostream &operator<<(std::ostream &os,  Drone &d){
+	std::cout<<"hel";	
 	d.guardar(os);
+	std::cout<<"hel";
 	return os;
-}
+}*/
 
 std::istream &operator>>(std::istream &is, Parcela &p){
 	std::string str;
