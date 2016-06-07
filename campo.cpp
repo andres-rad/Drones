@@ -1,4 +1,7 @@
 #include "campo.h"
+#include "tipos.h"
+#include "aux.h"
+#include <iostream>
 
 Campo::Campo() {
 }
@@ -55,7 +58,10 @@ void Campo::guardar(std::ostream &os) const {
 
   os << "{ C";															//campo
   os << " [" << _dimension.ancho << "," << _dimension.largo << "]";	//su dimension
-  os << " [";															//sus parcelas
+  /* os << " [";															//sus parcelas */
+
+  os<<_grilla.parcelas;
+  /*
   for (int i = 0; i < _dimension.ancho; i++) {
     os << "[";
 
@@ -71,7 +77,7 @@ void Campo::guardar(std::ostream &os) const {
       os << contenido(pos) << "], ";
     else
       os << contenido(pos) << "]]";
-  }
+  }*/
 
   os << "}";
 }
@@ -98,6 +104,8 @@ void Campo::cargar(std::istream &is) {
 
   	int i = 0, j = 0;
 
+	is>>grillTemp.parcelas;
+/*
   	while (currChar != '[') {
   		is >> currChar;
 
@@ -107,7 +115,7 @@ void Campo::cargar(std::istream &is) {
   	is >> currChar;
 
   	for (i = 0; i < currAncho; i++) {
-  		/* is>>currChar; */
+  		is>>currChar;
   		for (j = 0; j < currLargo; j++) {
   			is >> currChar;
   			is >> currChar;
@@ -130,10 +138,12 @@ void Campo::cargar(std::istream &is) {
   		while (i < currAncho - 1 && currChar != '[') is >> currChar;
 
 
-  	}
+  	}*/
 
   	_dimension = currDim;
   	_grilla = grillTemp;
+
+	this->mostrar(std::cout);
 
 }
 

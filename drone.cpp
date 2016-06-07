@@ -1,6 +1,6 @@
-#include "drone.h"
-#include "campo.h"		//tengo que poner esto porque ciertos operadores estan definidos ahi, deberian tal vez estarlo en tipos.h
+#include "drone.h"		
 #include "tipos.h"
+#include "aux.h"
 #include <vector>
 #include <iostream>
 #include <fstream>

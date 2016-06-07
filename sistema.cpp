@@ -1,5 +1,7 @@
 #include "sistema.h"
+#include "tipos.h"
 #include "aux.h"
+
 #include <algorithm>
 
 //Prototipos
@@ -251,6 +253,22 @@ void Sistema::guardar(std::ostream &os) const {
 }
 
 void Sistema::cargar(std::istream &is) {
+  char currChar;
+
+/* std::cout<<"jere"; */
+
+	is>>currChar;
+
+  while (currChar!='S'){
+    is>>currChar;
+	/* std::cout<<"je"; */
+  }
+
+  _campo.cargar(is);
+
+  is>>_enjambre;
+
+  return;
 }
 
 bool Sistema::operator==(const Sistema &otroSistema) const {
