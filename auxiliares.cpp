@@ -30,7 +30,7 @@ std::istream &operator>>(std::istream &is,  Drone &d){
 }
 
 /*std::ostream &operator<<(std::ostream &os,  Drone &d){
-	std::cout<<"hel";	
+	std::cout<<"hel";
 	d.guardar(os);
 	std::cout<<"hel";
 	return os;
@@ -94,4 +94,136 @@ std::istream &operator>>(std::istream &is,  EstadoCultivo &c){
 
 }
 
+bool enRango(const Sistema &s, Posicion p){
+	return p.x >= 0 && p.x < s.campo().dimensiones().ancho && p.y >= 0 && p.y < s.campo().dimensiones().largo;
+}
+
+
+bool posVacia(const Sistema &s, Posicion p){
+	bool res = true;
+	unsigned int i = 0;
+	while( i < s.enjambreDrones().size()){
+		if(s.enjambreDrones()[i].posicionActual() == p){
+			res = false;
+		}
+		i++;
+	}
+	return res;
+}
+
+Posicion suma(Posicion p, Posicion q){
+	Posicion s { p.x + q.x, p.y+ q.y};
+	return s;
+}
+
+Posicion posG(const Sistema & s){
+	Posicion granero;
+	int i = 0;
+	while (i < s.campo().dimensiones().ancho){
+		int j = 0;
+		while (j < s.campo().dimensiones().largo){
+			if (s.campo().contenido(Posicion { i, j }) == Granero){
+				granero = Posicion { i, j};
+			}
+			j++;
+		}
+		i++;
+	}
+	return granero;
+}
+
+bool hayProducto(const Secuencia<Producto>& ps, Producto p){
+	unsigned int i = 0;
+	bool b = false;
+	while(i < ps.size() && !b){
+		if(ps[i] == p){
+			b = true;
+		}
+		i++;
+	}
+	return b;
+}
+
+Secuencia<Posicion> movimientos(){
+  Secuencia<Posicion> mov(4);
+  mov = {Posicion {-1, 0}, Posicion {1, 0}, Posicion {0, -1}, Posicion {0, 1} };
+  return mov;
+}
+
+Secuencia<Posicion> posConCruces(const Secuencia<Drone>& ds) {
+	Secuencia<Posicion> res;
+
+	unsigned int i = 0;
+	while(i < ds.size()){
+		unsigned int j = 0;
+		while (j < ds[i].vueloRealizado().size()){
+			if(seCruzoConOtro(ds[i], ds, j)) {
+				Posicion pos = ds[i].vueloRealizado()[j];
+				if(!pertenece(pos, res)) res.push_back(pos);
+			}
+			j++;
+		}
+		i++;
+	}
+
+	/*for (Drone d : ds) {
+
+		for (int i = 0; i < d.vueloRealizado().size(); i++) {
+			if (seCruzoConOtro(d, ds, i)) {
+				Posicion pos = d.vueloRealizado()[i];
+				if (!pertenece(pos, res))
+					res.push_back(pos);
+			}
+		}
+	}
+	*/
+	return res;
+}
+
+bool const ordenCruzados(const InfoVueloCruzado& a, const InfoVueloCruzado& b) {
+	return a.cantidadCruces <= b.cantidadCruces;
+}
+
+int cantidadDronesCruzados(Posicion pos, const Secuencia<Drone>& ds) {
+	int cant = 0;
+	unsigned int i = 0;
+	while(i < ds.size()){
+		unsigned int j = 0;
+		while(j < ds[i].vueloRealizado().size()){
+			if (ds[i].vueloRealizado()[j] == pos && seCruzoConOtro(ds[i], ds, j)) cant ++;
+			j++;
+		}
+		i++;
+	}
+
+
+	/*
+	for (Drone d : ds) {
+		for (int i = 0; i < d.vueloRealizado().size(); i++) {
+			if (d.vueloRealizado()[i] == pos && seCruzoConOtro(d, ds, i))
+				cant++;
+		}
+	}
+	*/
+	return cant; // / 2;	//porque cada cruce lo suma 2 veces por par de drones cruzados
+                        //le saque el /2 porque sino no andaba, a mi tambien me confunde, pero asi paso los tests bien
+
+}
+
+bool seCruzoConOtro (Drone d, const Secuencia<Drone>& ds, int i) {
+
+	unsigned int j = 0;
+	while (j < ds.size()){
+		if(ds[j] != d && d.vueloRealizado()[i] == ds[j].vueloRealizado()[i]) return true;
+    j++;
+  }
+
+	/*
+	 for (Drone d2 : ds) {
+		if (d2 != d && d.vueloRealizado()[i] == d2.vueloRealizado()[i])
+			return true;
+	}
+	*/
+	return false;
+}
 //Implementen aqui sus funciones auxiliares globales definidas en aux.h...

@@ -5,12 +5,7 @@
 
 //Prototipos
 
-bool enRango(const Sistema &s, Posicion p);
-bool posVacia(const Sistema &s, Posicion p);
-Posicion suma(Posicion p, Posicion q);
-Posicion posG(const Sistema &s);
-bool hayProducto(const Secuencia<Producto>& ps, Producto p);
-Secuencia<Posicion> movimientos();
+
 //
 
 Sistema::Sistema() {
@@ -317,60 +312,3 @@ std::ostream &operator<<(std::ostream &os, const Sistema &s) {
 }
 
 //Auxiliares
-
-
-bool enRango(const Sistema &s, Posicion p){
-	return p.x >= 0 && p.x < s.campo().dimensiones().ancho && p.y >= 0 && p.y < s.campo().dimensiones().largo;
-}
-
-
-bool posVacia(const Sistema &s, Posicion p){
-	bool res = true;
-	unsigned int i = 0;
-	while( i < s.enjambreDrones().size()){
-		if(s.enjambreDrones()[i].posicionActual() == p){
-			res = false;
-		}
-		i++;
-	}
-	return res;
-}
-
-Posicion suma(Posicion p, Posicion q){
-	Posicion s { p.x + q.x, p.y+ q.y};
-	return s;
-}
-
-Posicion posG(const Sistema & s){
-	Posicion granero;
-	int i = 0;
-	while (i < s.campo().dimensiones().ancho){
-		int j = 0;
-		while (j < s.campo().dimensiones().largo){
-			if (s.campo().contenido(Posicion { i, j }) == Granero){
-				granero = Posicion { i, j};
-			}
-			j++;
-		}
-		i++;
-	}
-	return granero;
-}
-
-bool hayProducto(const Secuencia<Producto>& ps, Producto p){
-	unsigned int i = 0;
-	bool b = false;
-	while(i < ps.size() && !b){
-		if(ps[i] == p){
-			b = true;
-		}
-		i++;
-	}
-	return b;
-}
-
-Secuencia<Posicion> movimientos(){
-  Secuencia<Posicion> mov(4);
-  mov = {Posicion {-1, 0}, Posicion {1, 0}, Posicion {0, -1}, Posicion {0, 1} };
-  return mov;
-}

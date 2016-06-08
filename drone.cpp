@@ -1,4 +1,4 @@
-#include "drone.h"		
+#include "drone.h"
 #include "tipos.h"
 #include "auxiliares.h"
 #include <vector>
@@ -10,20 +10,8 @@
 #include <algorithm>
 
 //Prototipos
-template <class T>
-bool mismos(Secuencia<T> seq1, Secuencia<T> seq2);
 
-template <class T>
-int cuenta(T e, Secuencia<T> seq);
 
-Secuencia<Posicion> posConCruces(const Secuencia<Drone>& ds);
-
-int cantidadDronesCruzados(Posicion pos, const Secuencia<Drone>& ds);
-
-bool const ordenCruzados(const InfoVueloCruzado& a, const InfoVueloCruzado& b);
-
-template <class T>
-bool pertenece(T e, Secuencia<T>& seq);
 //
 
 Drone::Drone() {
@@ -392,133 +380,3 @@ std::ostream &operator<<(std::ostream &os, const Drone &d) {
 
 
 //Auxiliares
-bool seCruzoConOtro (Drone d, const Secuencia<Drone>& ds, int i) {
-
-	unsigned int j = 0;
-	while (j < ds.size()){
-		if(ds[j] != d && d.vueloRealizado()[i] == ds[j].vueloRealizado()[i]) return true;
-    j++;
-  }
-
-	/*
-	 for (Drone d2 : ds) {
-		if (d2 != d && d.vueloRealizado()[i] == d2.vueloRealizado()[i])
-			return true;
-	}
-	*/
-	return false;
-}
-
-Secuencia<Posicion> posConCruces(const Secuencia<Drone>& ds) {
-	Secuencia<Posicion> res;
-
-	unsigned int i = 0;
-	while(i < ds.size()){
-		unsigned int j = 0;
-		while (j < ds[i].vueloRealizado().size()){
-			if(seCruzoConOtro(ds[i], ds, j)) {
-				Posicion pos = ds[i].vueloRealizado()[j];
-				if(!pertenece(pos, res)) res.push_back(pos);
-			}
-			j++;
-		}
-		i++;
-	}
-
-	/*for (Drone d : ds) {
-
-		for (int i = 0; i < d.vueloRealizado().size(); i++) {
-			if (seCruzoConOtro(d, ds, i)) {
-				Posicion pos = d.vueloRealizado()[i];
-				if (!pertenece(pos, res))
-					res.push_back(pos);
-			}
-		}
-	}
-	*/
-	return res;
-}
-
-int cantidadDronesCruzados(Posicion pos, const Secuencia<Drone>& ds) {
-	int cant = 0;
-	unsigned int i = 0;
-	while(i < ds.size()){
-		unsigned int j = 0;
-		while(j < ds[i].vueloRealizado().size()){
-			if (ds[i].vueloRealizado()[j] == pos && seCruzoConOtro(ds[i], ds, j)) cant ++;
-			j++;
-		}
-		i++;
-	}
-
-
-	/*
-	for (Drone d : ds) {
-		for (int i = 0; i < d.vueloRealizado().size(); i++) {
-			if (d.vueloRealizado()[i] == pos && seCruzoConOtro(d, ds, i))
-				cant++;
-		}
-	}
-	*/
-	return cant; // / 2;	//porque cada cruce lo suma 2 veces por par de drones cruzados
-                        //le saque el /2 porque sino no andaba, a mi tambien me confunde, pero asi paso los tests bien
-
-}
-
-template<class T>
-bool pertenece(T e, Secuencia<T>& seq) {
-  unsigned int i=0;
-  bool ans=false;
-
-  while (i<seq.size()){
-    if (seq[i]==e) ans=true;
-    i++;
-  }
-
-  return ans;
-	/*if(std::find(seq.begin(), seq.end(), e) != seq.end())
-	    return true;
-
-	return false;*/
-}
-
-bool const ordenCruzados(const InfoVueloCruzado& a, const InfoVueloCruzado& b) {
-	return a.cantidadCruces <= b.cantidadCruces;
-}
-
-template <class T>
-bool mismos(Secuencia<T> seq1, Secuencia<T> seq2) {
-	if (seq1.size() != seq2.size())	return false;
-
-	unsigned int i = 0;
-
-	while(i < seq1.size()){
-		if(cuenta(seq1[i], seq1) != cuenta(seq1[i], seq2)) return false;
-		i++;
-	}
-	/*
-	for (T e : seq1) {
-		if (cuenta(e, seq1) != cuenta(e, seq2))
-			return false;
-	}
-	*/
-	return true;
-}
-
-template <class T>
-int cuenta(T e, Secuencia<T> seq) {
-	int contador = 0;
-	unsigned int i = 0;
-
-	while(i < seq.size()){
-		if(seq[i] == e) contador ++;
-		i++;
-	}
-	/*
-	for (T a : seq) {
-		if (a == e)
-			contador++;
-	}
-	*/
-	return contador;
-}

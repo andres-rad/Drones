@@ -51,7 +51,7 @@ if (is.peek()!=']'){
 
 
   while (currChar!=']'){
-	
+
 
     is>>temp;
     sec.push_back(temp);
@@ -65,8 +65,75 @@ if (is.peek()!=']'){
   return is;
 }
 
+bool enRango(const Sistema &s, Posicion p);
+bool posVacia(const Sistema &s, Posicion p);
+Posicion suma(Posicion p, Posicion q);
+Posicion posG(const Sistema &s);
+bool hayProducto(const Secuencia<Producto>& ps, Producto p);
+Secuencia<Posicion> movimientos();
+
+template<class T>
+inline bool pertenece(T e, Secuencia<T>& seq) {
+  unsigned int i=0;
+  bool ans=false;
+
+  while (i<seq.size()){
+    if (seq[i]==e) ans=true;
+    i++;
+  }
+
+  return ans;
+	/*if(std::find(seq.begin(), seq.end(), e) != seq.end())
+	    return true;
+
+	return false;*/
+}
+
+template <class T>
+inline bool mismos(Secuencia<T> seq1, Secuencia<T> seq2) {
+	if (seq1.size() != seq2.size())	return false;
+
+	unsigned int i = 0;
+
+	while(i < seq1.size()){
+		if(cuenta(seq1[i], seq1) != cuenta(seq1[i], seq2)) return false;
+		i++;
+	}
+	/*
+	for (T e : seq1) {
+		if (cuenta(e, seq1) != cuenta(e, seq2))
+			return false;
+	}
+	*/
+	return true;
+}
+
+template <class T>
+inline int cuenta(T e, Secuencia<T> seq) {
+	int contador = 0;
+	unsigned int i = 0;
+
+	while(i < seq.size()){
+		if(seq[i] == e) contador ++;
+		i++;
+	}
+	/*
+	for (T a : seq) {
+		if (a == e)
+			contador++;
+	}
+	*/
+	return contador;
+}
 
 
+Secuencia<Posicion> posConCruces(const Secuencia<Drone>& ds);
+
+int cantidadDronesCruzados(Posicion pos, const Secuencia<Drone>& ds);
+
+bool const ordenCruzados(const InfoVueloCruzado& a, const InfoVueloCruzado& b);
+
+bool seCruzoConOtro (Drone d, const Secuencia<Drone>& ds, int i);
 
 //Declaren aqui sus funciones auxiliares globales...
 
