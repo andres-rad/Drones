@@ -1,5 +1,5 @@
 #include "sistema.h"
-#include "aux.h"
+#include "auxiliares.h"
 
 #include <algorithm>
 
@@ -280,14 +280,14 @@ void Sistema::cargar(std::istream &is) {
 
 
   _campo.cargar(is);
-std::cout<<std::endl<<"hel "<<(char)(is.peek())<<std::endl;
+
 
   is>>_enjambre;
-std::cout<<std::endl<<"hel2 "<<(char)(is.peek())<<std::endl;
+
 
 	is>>_estado.parcelas;
 
-std::cout<<"dsa";
+
 
   return;
 }

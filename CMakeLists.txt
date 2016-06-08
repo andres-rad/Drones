@@ -9,7 +9,7 @@ set(SOURCE_FILES
         drone.cpp
         sistema.h
         sistema.cpp
-        aux.h
-        aux.cpp)
+        auxiliares.h
+        auxiliares.cpp)
 
 add_library(src ${SOURCE_FILES})

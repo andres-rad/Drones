@@ -1,4 +1,4 @@
-#include "aux.h"
+#include "auxiliares.h"
 
 
 int buscarDrone (const Sistema & s, const Drone & d){

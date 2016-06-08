@@ -1,5 +1,5 @@
 #include "campo.h"
-#include "aux.h"
+#include "auxiliares.h"
 #include <iostream>
 
 Campo::Campo() {

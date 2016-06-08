@@ -1,6 +1,6 @@
 #include "drone.h"		
 #include "tipos.h"
-#include "aux.h"
+#include "auxiliares.h"
 #include <vector>
 #include <iostream>
 #include <fstream>
