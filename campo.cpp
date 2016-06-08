@@ -104,6 +104,9 @@ void Campo::cargar(std::istream &is) {
   	int i = 0, j = 0;
 
 	is>>grillTemp.parcelas;
+
+	is>>currChar;
+	while (currChar!='}') is>>currChar;
 	
 
 /*

@@ -47,6 +47,29 @@ std::istream &operator>>(std::istream &is, Parcela &p){
 	return is;
 }
 
+std::istream &operator>>(std::istream &is, Producto &p){
+	std::string str;
+	str = getLineTwo(is, ']', ',');
+
+	if (str=="Fertilizante") p=Fertilizante;
+	else if (str=="Plaguicida") p=Plaguicida;
+	else if (str=="PlaguicidaBajoConsumo") p=PlaguicidaBajoConsumo;
+	else if (str=="Herbicida") p=Herbicida;
+	else if (str=="HerbicidaLargoAlcance") p=HerbicidaLargoAlcance;
+
+
+
+return is;
+}
+
+std::istream &operator>>(std::istream &is, Posicion &p){
+	char currChar;
+	int x,y;
+	is>>currChar>>x>>currChar>>y>>currChar;
+	p=Posicion {x,y};
+	return is;
+}
+
 std::istream &operator>>(std::istream &is,  Campo &c){
   c.cargar(is);
   return is;

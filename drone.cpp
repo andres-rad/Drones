@@ -194,8 +194,8 @@ void Drone::cargar(std::istream &is) {
   char currChar; //se usa para el caracter actual, muchas veces para tirarlo
 	std::string currString; //se usa para el string actual, si es necesario
 
-	ID id;															//Estos son los valores
-	Carga bate;													//que despuen van al drone
+	ID id;								//Estos son los valores
+	Carga bate;							//que despuen van al drone
 	Secuencia<Posicion> trayectoria;
 	Secuencia<Producto> productos;
 	bool vuelo;
@@ -211,6 +211,9 @@ void Drone::cargar(std::istream &is) {
 	//El proximo va a ser la carga, la mando directamente
 	is>>bate;
 
+	is>>trayectoria;
+
+/*
 	//Avanzo hasta que tengo el [ que abre la trayectoria, y agarro uno mas
 	is>>currChar;
 	while (currChar!='[') is>>currChar;
@@ -233,6 +236,7 @@ void Drone::cargar(std::istream &is) {
 		}
 		is>>currChar;
 	}
+*/
 
 	//Avanzo hasta que tengo el [ que abre los productos
 	while (currChar!='[') is>>currChar;
@@ -288,7 +292,10 @@ void Drone::cargar(std::istream &is) {
 
 	int x,y;
 
-	is>>x>>currChar>>y;
+	is>>x>>currChar>>y>>currChar;
+
+	is>>currChar;
+	while (currChar!='}') is>>currChar;
 
 	posAct.x=x;
 	posAct.y=y;

@@ -20,6 +20,10 @@ std::istream &operator>>(std::istream &is,  EstadoCultivo &c); //Para leer Estad
 
 std::istream &operator>>(std::istream &is, Parcela &p); //Para leer parcelas
 
+std::istream &operator>>(std::istream &is, Posicion &p); //Para leer posiciones
+
+std::istream &operator>>(std::istream &is, Producto &p); //Para leer productos
+
 template<class T>
 inline std::ostream& operator<<(std::ostream &os, const std::vector <T> &v){
 	os<<'[';
@@ -43,12 +47,20 @@ inline std::istream &operator>>(std::istream &is,   std::vector <T> &sec){
   T temp;
   sec=Secuencia <T> (0);
 
+if (is.peek()!=']'){
+
+
   while (currChar!=']'){
+	
 
     is>>temp;
     sec.push_back(temp);
     is>>currChar;
   }
+}else {
+	is>>currChar;
+}
+
 
   return is;
 }

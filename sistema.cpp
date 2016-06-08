@@ -246,7 +246,15 @@ void Sistema::volarYSensar(const Drone &d) {
 }
 
 void Sistema::mostrar(std::ostream &os) const {
-this->guardar(os);
+os<<"Sistema:"<<std::endl;//etc
+_campo.mostrar(os);
+os<<std::endl;
+for (int i=0; i< _enjambre.size();i++){
+	_enjambre[i].mostrar(os);
+	os<<std::endl;
+}
+os<<_estado.parcelas;
+
 return;
 }
 
@@ -262,7 +270,7 @@ void Sistema::cargar(std::istream &is) {
   char currChar;
 
 
-	std::cout<<"jere";
+
 	is>>currChar;
 
   while (currChar!='S'){
@@ -272,8 +280,14 @@ void Sistema::cargar(std::istream &is) {
 
 
   _campo.cargar(is);
+std::cout<<std::endl<<"hel "<<(char)(is.peek())<<std::endl;
 
   is>>_enjambre;
+std::cout<<std::endl<<"hel2 "<<(char)(is.peek())<<std::endl;
+
+	is>>_estado.parcelas;
+
+std::cout<<"dsa";
 
   return;
 }
