@@ -12,8 +12,6 @@ std::string getLineTwo (std::istream &is, char del1, char del2);
 
 std::istream &operator>>(std::istream &is,  Drone &d);//Para leer Drone
 
-//std::ostream &operator<<(std::ostream &os,  Drone &d);//Para guardar Drone
-
 std::istream &operator>>(std::istream &is,  Campo &c); //Para leer Campo
 
 std::istream &operator>>(std::istream &is,  EstadoCultivo &c); //Para leer EstadoCultivo
@@ -24,11 +22,13 @@ std::istream &operator>>(std::istream &is, Posicion &p); //Para leer posiciones
 
 std::istream &operator>>(std::istream &is, Producto &p); //Para leer productos
 
+std::ostream &operator<<(std::ostream &os, const Posicion &p);
+
 template<class T>
 inline std::ostream& operator<<(std::ostream &os, const std::vector <T> &v){
 	os<<'[';
-	int i =0;
-	while (i<v.size()-1){
+	unsigned int i =0;
+	while (i+1 < v.size()){
 		os<<v[i]<<',';
 		i++;
 	}

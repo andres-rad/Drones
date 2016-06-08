@@ -12,7 +12,7 @@ Sistema::Sistema() {
 }
 
 Sistema::Sistema(const Campo &c, const Secuencia<Drone> &ds) {
-  _campo = c;
+    _campo = c;
 	_enjambre = ds;
 	_estado = Grilla<EstadoCultivo> (c.dimensiones());
 	int i = 0;
@@ -241,49 +241,36 @@ void Sistema::volarYSensar(const Drone &d) {
 }
 
 void Sistema::mostrar(std::ostream &os) const {
-os<<"Sistema:"<<std::endl;//etc
-_campo.mostrar(os);
-os<<std::endl;
-for (int i=0; i< _enjambre.size();i++){
-	_enjambre[i].mostrar(os);
-	os<<std::endl;
-}
-os<<_estado.parcelas;
+    os<<"Sistema:"<<std::endl;//etc
+    _campo.mostrar(os);
+    os << std::endl;
+    for (int i=0; i< _enjambre.size();i++){
+        _enjambre[i].mostrar(os);
+        os<<std::endl;
+    }
+    os<<_estado.parcelas;
 
-return;
+    return;
 }
 
 void Sistema::guardar(std::ostream &os) const {
-os<<"{ S ";
-_campo.guardar(os);
-os<<_enjambre;
-os<<_estado.parcelas<<std::endl;
-
+    os<<"{ S ";
+    _campo.guardar(os);
+    os<<_enjambre;
+    os<<_estado.parcelas<<std::endl;
 }
 
 void Sistema::cargar(std::istream &is) {
   char currChar;
-
-
-
-	is>>currChar;
+  is>>currChar;
 
   while (currChar!='S'){
     is>>currChar;
-
   }
 
-
   _campo.cargar(is);
-
-
   is>>_enjambre;
-
-
-	is>>_estado.parcelas;
-
-
-
+  is>>_estado.parcelas;
   return;
 }
 
@@ -308,7 +295,6 @@ bool Sistema::operator==(const Sistema &otroSistema) const {
 }
 
 std::ostream &operator<<(std::ostream &os, const Sistema &s) {
+    s.guardar(os);
     return os;
 }
-
-//Auxiliares

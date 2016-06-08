@@ -90,8 +90,11 @@ std::istream &operator>>(std::istream &is,  EstadoCultivo &c){
 
 
   return is;
+}
 
-
+std::ostream &operator<<(std::ostream &os, const Posicion &p){
+    os << '[' << p.x << ',' << p.y << ']';
+    return os;
 }
 
 bool enRango(const Sistema &s, Posicion p){
