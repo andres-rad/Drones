@@ -8,7 +8,7 @@
 
 int buscarDrone (const Sistema & s, const Drone & d); //Busca un dron en un enjambre de un sistema y devuelve su indice
 
-std::string getLineTwo (std::istream &is, char del1, char del2);
+std::string getLineTwo (std::istream &is, char del1, char del2); //Agarra un string de is hasta que encuentra alguno de los dos delimitadores
 
 std::istream &operator>>(std::istream &is,  Drone &d);//Para leer Drone
 
@@ -22,10 +22,10 @@ std::istream &operator>>(std::istream &is, Posicion &p); //Para leer posiciones
 
 std::istream &operator>>(std::istream &is, Producto &p); //Para leer productos
 
-std::ostream &operator<<(std::ostream &os, const Posicion &p);
+std::ostream &operator<<(std::ostream &os, const Posicion &p); //Para cargar Posicion
 
 template<class T>
-inline std::ostream& operator<<(std::ostream &os, const std::vector <T> &v){
+inline std::ostream& operator<<(std::ostream &os, const std::vector <T> &v){ //Carga una secuencia de tipo T
 	os<<'[';
 	unsigned int i =0;
 	while (i+1 < v.size()){
@@ -40,7 +40,7 @@ inline std::ostream& operator<<(std::ostream &os, const std::vector <T> &v){
 }
 
 template<class T>
-inline std::istream &operator>>(std::istream &is,   std::vector <T> &sec){
+inline std::istream &operator>>(std::istream &is,   std::vector <T> &sec){ //Lee una secuencia de tipo T
   char currChar;
   is>>currChar;
 
@@ -83,10 +83,6 @@ inline bool pertenece(T e, Secuencia<T>& seq) {
   }
 
   return ans;
-	/*if(std::find(seq.begin(), seq.end(), e) != seq.end())
-	    return true;
-
-	return false;*/
 }
 
 template <class T>
@@ -99,12 +95,7 @@ inline bool mismos(Secuencia<T> seq1, Secuencia<T> seq2) {
 		if(cuenta(seq1[i], seq1) != cuenta(seq1[i], seq2)) return false;
 		i++;
 	}
-	/*
-	for (T e : seq1) {
-		if (cuenta(e, seq1) != cuenta(e, seq2))
-			return false;
-	}
-	*/
+	
 	return true;
 }
 
@@ -117,12 +108,7 @@ inline int cuenta(T e, Secuencia<T> seq) {
 		if(seq[i] == e) contador ++;
 		i++;
 	}
-	/*
-	for (T a : seq) {
-		if (a == e)
-			contador++;
-	}
-	*/
+	
 	return contador;
 }
 
@@ -135,6 +121,5 @@ bool const ordenCruzados(const InfoVueloCruzado& a, const InfoVueloCruzado& b);
 
 bool seCruzoConOtro (Drone d, const Secuencia<Drone>& ds, int i);
 
-//Declaren aqui sus funciones auxiliares globales...
 
 #endif //AUX_H

@@ -35,6 +35,7 @@ public:
     bool operator==(const Drone &otroDrone) const;
 
     bool operator!=(const Drone & otroDrone) const;
+    //Definimos este operador para hacer mas legible la comparacion entre drones
 
     void moverA(const Posicion pos);
 

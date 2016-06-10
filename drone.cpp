@@ -9,10 +9,7 @@
 #include <ctype.h>
 #include <algorithm>
 
-//Prototipos
 
-
-//
 
 Drone::Drone() {
 }
@@ -59,16 +56,7 @@ bool Drone::vueloEscalerado() const {
 		unsigned int i=0;
 		ultDifX=_trayectoria[0].x - _trayectoria[2].x;
 		ultDifY=_trayectoria[0].y - _trayectoria[2].y;
-
-		//PC: i==0 && ans==true &&
-		//		ultDifY==_trayectoria[0].y - _trayectoria[2].y &&
-		//		ultDifX==_trayectoria[0].x - _trayectoria[2].x
 		while (i < _trayectoria.size() - 2) {
-			//B: i < _trayectoria.size() - 2
-			//I: 0<=i<=n && ans==(forAll j en [0..i))(ultDifY==_trayectoria[j].y - _trayectoria[j+2].y &&
-			//		ultDifX=_trayectoria[j].x - _trayectoria[j+2].x)
-			//FV: _trayectoria.size()-2-i
-			//Cota: 0
 
 			int difX = _trayectoria[i].x - _trayectoria[i+2].x;
 			int difY = _trayectoria[i].y - _trayectoria[i+2].y;
@@ -79,7 +67,7 @@ bool Drone::vueloEscalerado() const {
 		}
 	}
 
-	return ans && abs(ultDifY)==1 && abs(ultDifX)==1 && _enVuelo;	//faltaria testearla teniendo algo en _trayectoria
+	return ans && abs(ultDifY)==1 && abs(ultDifX)==1 && _enVuelo;
 }
 
 Secuencia <InfoVueloCruzado> Drone::vuelosCruzados(const Secuencia<Drone> &ds) {
