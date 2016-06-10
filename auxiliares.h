@@ -72,8 +72,8 @@ Posicion posG(const Sistema &s);
 bool hayProducto(const Secuencia<Producto>& ps, Producto p);
 Secuencia<Posicion> movimientos();
 
-template<class T>
-inline bool pertenece(T e, Secuencia<T>& seq) {
+template<class T>									// Un simple pertenece generico para secuencias
+inline bool pertenece(T e, Secuencia<T>& seq) {		// de tipos T que implementen ==
   unsigned int i=0;
   bool ans=false;
 
@@ -85,21 +85,21 @@ inline bool pertenece(T e, Secuencia<T>& seq) {
   return ans;
 }
 
-template <class T>
-inline bool mismos(Secuencia<T> seq1, Secuencia<T> seq2) {
-	if (seq1.size() != seq2.size())	return false;
+template <class T>											// Implementacion de mismos muy similar a la especificacion
+inline bool mismos(Secuencia<T> seq1, Secuencia<T> seq2) {	// que veniamos usando en clase, cuenta los elementos
+	if (seq1.size() != seq2.size())	return false;			// Tienen que tener misma longitud
 
 	unsigned int i = 0;
 
 	while(i < seq1.size()){
-		if(cuenta(seq1[i], seq1) != cuenta(seq1[i], seq2)) return false;
-		i++;
+		if(cuenta(seq1[i], seq1) != cuenta(seq1[i], seq2)) return false;	// Si algun elemento está una cantidad de veces distinta
+		i++;																// en una lista que en la otra, falso
 	}
-	
-	return true;
+
+	return true;	// Porque todos los elementos estan la misma cantidad de veces en ambas listas y tienen la misma longitud
 }
 
-template <class T>
+template <class T>							// Devuelve la cantidad de veces que aparece e en seq
 inline int cuenta(T e, Secuencia<T> seq) {
 	int contador = 0;
 	unsigned int i = 0;
@@ -108,7 +108,7 @@ inline int cuenta(T e, Secuencia<T> seq) {
 		if(seq[i] == e) contador ++;
 		i++;
 	}
-	
+
 	return contador;
 }
 
