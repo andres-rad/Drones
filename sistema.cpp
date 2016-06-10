@@ -238,7 +238,7 @@ void Sistema::mostrar(std::ostream &os) const {
     while(j < _campo.dimensiones().ancho){
 
       int k = 0;
-      while(k < _campo.dimensiones().largo{
+      while(k < _campo.dimensiones().largo) {
 
         if(_estado.parcelas[j][k] == NoSensado){
           os << "NS ";
@@ -247,7 +247,7 @@ void Sistema::mostrar(std::ostream &os) const {
            os << "RS ";
         }
         else if(_estado.parcelas[j][k] == EnCrecimiento){
-          os << "EC "
+          os << "EC ";
         }
         else if(_estado.parcelas[j][k] == ListoParaCosechar){
           os << "LC ";
@@ -302,7 +302,7 @@ bool Sistema::operator==(const Sistema &otroSistema) const {
          }
         j++;
       }
-      i++
+      i++;
     }
 
     if (!(_enjambre == otroSistema.enjambreDrones()))
