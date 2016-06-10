@@ -127,22 +127,9 @@ void Drone::guardar(std::ostream &os) const {
 
 	// Trayectoria
     os<<_trayectoria;
-	// os << "[";
-	// if (_trayectoria.size() > 0)	{		//tira segfault si intenta _trayectoria[0] cuando es vacio
-	// 	for (unsigned int i = 0; i < _trayectoria.size() - 1; i++) {
-	// 		os << "[" << _trayectoria[i].x << "," << _trayectoria[i].y << "],";
-	// 	}
-	// 	os << "[" << _trayectoria[_trayectoria.size() - 1].x << "," << _trayectoria[_trayectoria.size() - 1].y << "]";
-	// }
-	// os << "]";
 
 	//Productos
     os << _productos;
-    // os << "[";
-	// for (unsigned int i = 0; i < _productos.size() - 1; i++) {
-	// 	os << _productos[i] << ",";
-	// }
-	// os << _productos[_productos.size() -1 ] << "]";
 
 	// En vuelo
 	if (_enVuelo) {			//pone 1 y 0 si hago os << _enVuelo
@@ -180,74 +167,7 @@ void Drone::cargar(std::istream &is) {
 
 	is>>trayectoria;
 
-/*
-	//Avanzo hasta que tengo el [ que abre la trayectoria, y agarro uno mas
-	is>>currChar;
-	while (currChar!='[') is>>currChar;
-	is>>currChar;
-
-	//Ciclo general, hasta que llego al final de la trayectoria ]
-	while (currChar!=']'){
-		//Por las dudas de que haya algun espacio, o algo asi
-		if (currChar=='['){
-			int x,y;
-			//x= posicion x; tiro la coma; y= posicion y; tiro el ]
-			is>>x;
-			is>>currChar;
-			is>>y;
-			is>>currChar;
-
-			//pusheo la posicion a trayectoria
-			Posicion posTemp{x,y};
-			trayectoria.push_back(posTemp);
-		}
-		is>>currChar;
-	}
-*/
-
-	//Avanzo hasta que tengo el [ que abre los productos
-	while (currChar!='[') is>>currChar;
-
-	//Ciclo general, hasta que llego al final de los productos ]
-	while (currChar!=']'){
-
-
-		is>>currChar;
-		//Agarro la primer letra y me fijo cual puede ser
-		if (currChar=='F'){
-			//F igual Fertilizante y avanzo hasta la coma, chequendo si termina la lista
-			productos.push_back(Fertilizante);
-			//std::cout<<"#1"<<std::endl;
-			while (currChar!=']'&&currChar!=',') {is>>currChar;}
-		}
-		else if (currChar=='P'){
-			//P puede ser Plaguicida o PlaguicidaBajoConsumo, avanzo hasta la coma o una mayuscula
-			is>>currChar;
-			while(currChar!=']'&&currChar!=',' && !isupper(currChar)) is>>currChar;
-			//si es mayus, es PlaguicidaBajoConsumo, sino Plaguicida
-			if (currChar=='B'){
-				productos.push_back(PlaguicidaBajoConsumo);
-				while (currChar!=']'&&currChar!=',') is>>currChar;
-			}else{
-				productos.push_back(Plaguicida);
-			}
-		}
-		else if (currChar=='H'){
-			//H puede ser Herbicida o HerbicidaLargoAlcance, avanzo hasta la coma o una mayuscula
-			is>>currChar;
-			while(currChar!=']'&&currChar!=',' && !isupper(currChar)) is>>currChar;
-			//si es mayus, es HerbicidaLargoAlcance, sino Herbicida
-			if (currChar=='L'){
-				productos.push_back(HerbicidaLargoAlcance);
-				while (currChar!=']'&&currChar!=',') is>>currChar;
-			}else{
-				productos.push_back(Herbicida);
-			}
-		}
-
-
-	}
-
+	is>>productos;
 
 
 	while (currChar!='t' && currChar!='f') {is>>currChar;}
