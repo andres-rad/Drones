@@ -225,57 +225,91 @@ void Sistema::volarYSensar(const Drone &d) {
 }
 
 void Sistema::mostrar(std::ostream &os) const {
-    os<<"Sistema:"<<std::endl;//etc
+    os << "Sistema:" << std::endl;
     _campo.mostrar(os);
     os << std::endl;
-    for (int i=0; i< _enjambre.size();i++){
-        _enjambre[i].mostrar(os);
-        os<<std::endl;
+    unsigned int i = 0;
+    while(i < _enjambre.size()){
+      _enjambre[i].mostrar(os);
+      os << std::endl;
+      i++;
     }
-    os<<_estado.parcelas;
 
+    int j = 0;
+    while(j < _campo.dimensiones().ancho){
+
+      int k = 0;
+      while(k < _campo.dimensiones().largo{
+
+        if(_estado.parcelas[j][k] == NoSensado){
+          os << "NS ";
+        }
+        else if(_estado.parcelas[j][k] == RecienSembrado){
+           os << "RS ";
+        }
+        else if(_estado.parcelas[j][k] == EnCrecimiento){
+          os << "EC "
+        }
+        else if(_estado.parcelas[j][k] == ListoParaCosechar){
+          os << "LC ";
+        }
+        else if(_estado.parcelas[j][k] == ConPlaga){
+          os << "CP ";
+        }
+        else{
+          os << "CM ";
+        }
+        k++;
+      }
+      os << std::endl;
+      j++;
+    }
     return;
 }
 
 void Sistema::guardar(std::ostream &os) const {
-    os<<"{ S ";
+    os << "{ S ";
     _campo.guardar(os);
-    os<<_enjambre;
-    os<<_estado.parcelas<<std::endl;
+    os << _enjambre;
+    os << _estado.parcelas << std::endl;
 }
 
 void Sistema::cargar(std::istream &is) {
   char currChar;
-  is>>currChar;
+  is >> currChar;
 
-  while (currChar!='S'){
-    is>>currChar;
+  while (currChar != 'S'){
+    is >> currChar;
   }
 
   _campo.cargar(is);
-  is>>_enjambre;
-  is>>_estado.parcelas;
+  is >> _enjambre;
+  is >> _estado.parcelas;
   return;
 }
 
 bool Sistema::operator==(const Sistema &otroSistema) const {
+    bool sonIguales = true;
     if (!(_campo == otroSistema.campo()))
-        return false;
+        sonIguales = false;
 
-    for (int i = 0; i < _campo.dimensiones().ancho; i++) {
-        for (int j = 0; j < _campo.dimensiones().largo; j++) {
-            Posicion pos{ i, j };
-            if (_campo.contenido(pos) == Cultivo &&
-            estadoDelCultivo(pos) != otroSistema.estadoDelCultivo(pos)) {
-                return false;
-            }
-        }
+    int i = 0;
+    while(i < _campo.dimensiones().ancho){
+      int j = 0;
+      while(j < _campo.dimensiones().largo){
+        Posicion pos{i, j};
+        if(_campo.contenido(pos) == Cultivo && estadoDelCultivo(pos) != otroSistema.estadoDelCultivo(pos)){
+          sonIguales = false;
+         }
+        j++;
+      }
+      i++
     }
 
     if (!(_enjambre == otroSistema.enjambreDrones()))
-        return false;
+        sonIguales = false;
 
-    return true;
+    return sonIguales;
 }
 
 std::ostream &operator<<(std::ostream &os, const Sistema &s) {
