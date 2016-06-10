@@ -13,7 +13,7 @@ Campo::Campo(const Posicion &posG, const Posicion &posC, Dimension dimension) {
 }
 
 Campo::Campo(const Posicion &posG, const Posicion &posC) {
-  //asumo que se cumple el requiere
+	//asumo que se cumple el requiere
 	_dimension.ancho = std::max(10,std::max(posG.x, posC.x)) + 1;
 	_dimension.largo = std::max(posG.y, posC.y) + 1;
 	_grilla = Grilla<Parcela>(_dimension);
@@ -31,11 +31,12 @@ Dimension Campo::dimensiones() const {
 }
 
 Parcela Campo::contenido(const Posicion &p) const {
-  return _grilla.parcelas[p.x][p.y];
+ 	//asume que esta en rango	
+       	return _grilla.parcelas[p.x][p.y];
 }
 
 void Campo::mostrar(std::ostream &os) const {
-  os << "Mostrando Campo:" << std::endl;
+ 	os << "Mostrando Campo:" << std::endl;
 	os << "Dimensiones: (" << _dimension.ancho << ", " << _dimension.largo << ")" << std::endl;
 	os << "Parcelas: " << std::endl;
 
@@ -52,33 +53,15 @@ void Campo::mostrar(std::ostream &os) const {
 }
 
 void Campo::guardar(std::ostream &os) const {
-  //El que use la funcion tendrá que fijarse, si corresponde
-  //si su ofstream está open
 
-  os << "{ C";															//campo
-  os << " [" << _dimension.ancho << "," << _dimension.largo << "] ";	//su dimension
-  /* os << " [";															//sus parcelas */
+	  os << "{ C";															//campo
+	  os << " [" << _dimension.ancho << "," << _dimension.largo << "] ";	//su dimension
 
-  os<<_grilla.parcelas;
-  /*
-  for (int i = 0; i < _dimension.ancho; i++) {
-    os << "[";
+	  os<<_grilla.parcelas;
 
-    for (int j = 0; j < _dimension.largo - 1; j++) {
-      Posicion pos{ i, j };
-      os << contenido(pos);
-      os << ",";
-    }
+	  os << "}";
 
-    Posicion pos{ i, _dimension.largo - 1 };
-
-    if (i < _dimension.ancho - 1)
-      os << contenido(pos) << "], ";
-    else
-      os << contenido(pos) << "]]";
-  }*/
-
-  os << "}";
+	  return;
 }
 
 void Campo::cargar(std::istream &is) {
@@ -101,74 +84,38 @@ void Campo::cargar(std::istream &is) {
 
   	Grilla<Parcela> grillTemp(Dimension {0,0});
 
-  	int i = 0, j = 0;
 
 	is>>grillTemp.parcelas;
 
 	is>>currChar;
 	while (currChar!='}') is>>currChar;
 	
-
-/*
-  	while (currChar != '[') {
-  		is >> currChar;
-
-
-  	}
-
-  	is >> currChar;
-
-  	for (i = 0; i < currAncho; i++) {
-  		is>>currChar;
-  		for (j = 0; j < currLargo; j++) {
-  			is >> currChar;
-  			is >> currChar;
-  			is >> currChar;
-
-
-  			if (currChar == 'l') {
-  				grillTemp.parcelas[i][j] = Cultivo;
-  			}
-  			else if (currChar == 's') {
-  				grillTemp.parcelas[i][j] = Casa;
-  			}
-  			else if (currChar == 'a') {
-  				grillTemp.parcelas[i][j] = Granero;
-  			}
-
-  			while (currChar != ','&&currChar != ']') is >> currChar;
-
-  		}
-  		while (i < currAncho - 1 && currChar != '[') is >> currChar;
-
-
-  	}*/
-
   	_dimension = currDim;
   	_grilla = grillTemp;
 
-
+	return;
 
 }
 
 bool Campo::operator==(const Campo &otroCampo) const {
-
+	
+	bool ans=true;
 	if (!(_dimension.ancho == otroCampo.dimensiones().ancho			//si tienen distintas
 		&& _dimension.largo == otroCampo.dimensiones().largo))		//dimensiones, son distintos
-		return false;
+		ans=false;
 
 	for (int i = 0; i < _dimension.ancho; i++) {					//compara todas las parcelas
 		for (int j = 0; j < _dimension.largo; j++) {
 			Posicion pos{ i, j };
 			if (contenido(pos) != otroCampo.contenido(pos))			//Si una parcela no coincide, son distintos
-				return false;
+				ans=false;
 		}
 	}
 
-	return true;
+	return ans;
 }
 
 std::ostream &operator<<(std::ostream &os, const Campo &c) {
-  c.mostrar(os);
+  c.guardar(os);
   return os;
 }

@@ -134,12 +134,10 @@ bool Sistema::listoParaCosechar() const {
     int i = 0;
     while (i < _campo.dimensiones().ancho * _campo.dimensiones().largo){
         Posicion pos {i % _campo.dimensiones().ancho, i / _campo.dimensiones().ancho};
-        //std::cout<<"pos x "<<pos.x<<"  pos y  "<<pos.y<<"  i  "<<i<< std::endl;
         if (_campo.contenido(pos)==Cultivo &&
             _estado.parcelas[pos.x][pos.y] == ListoParaCosechar) listas++;
         i++;
     }
-    //std::cout<<"Listos para cos  "<<listas<<"  de  "<<total<<std::endl;
     return 10 * listas >= 9 * total;
 }
 
