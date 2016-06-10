@@ -1,12 +1,6 @@
 #include "sistema.h"
 #include "auxiliares.h"
-
 #include <algorithm>
-
-//Prototipos
-
-
-//
 
 Sistema::Sistema() {
 }
@@ -16,14 +10,6 @@ Sistema::Sistema(const Campo &c, const Secuencia<Drone> &ds) {
 	_enjambre = ds;
 	_estado = Grilla<EstadoCultivo> (c.dimensiones());
 	int i = 0;
-	/*while(i < _enjambre.size()){
-		_enjambre[i].setBateria(100);
-		_enjambre[i].borrarVueloRealizado();
-		_enjambre[i].cambiarPosicionActual(posG(*this));
-    i++;
-		//Si no están en vuelo como hago que PosiciónActual devuelva el granero, porque vuelosRealizados tiene que estar vacío.
-	}*/
-  //todo eso no hace falta por los requiere
 	int j = 0;
 	while( j < c.dimensiones().ancho ){
 		int i = 0;
@@ -83,7 +69,7 @@ void Sistema::seExpandePlaga() {
 		int j = 0;
 		while (j < _campo.dimensiones().largo){
 			if(_estado.parcelas[i][j] == ConPlaga){
-
+        //En cada guarda me fijo que la parcela adyacente a considerar sea una posicion valida.
 				if( j - 1 >= 0 && _campo.contenido(Posicion { i, j-1}) == Cultivo){
 					estadoTemp.parcelas[i][j-1] = ConPlaga;
 				}
@@ -111,15 +97,14 @@ void Sistema::seExpandePlaga() {
 
 void Sistema::despegar(const Drone &d) {
   Secuencia<Posicion> posicionesActuales;
-	int i = 0;
+	unsigned int i = 0;
 	int despegado = 0;
-  int indice=buscarDrone(*this, d);
+  int indice = buscarDrone(*this, d);
 	Secuencia<Posicion> adyacentes = movimientos();
 	Posicion granero = posG(*this);
 
-	while (i < 4 && !despegado){
+	while (i < adyacentes.size() && !despegado){
 		if(enRango(*this, suma(granero, adyacentes[i])) && posVacia(*this, suma(granero, adyacentes[i]))){
-		//Aca hay que usar moverA que puede que no está claro que quieren que haga.
    			_enjambre[indice].moverA(suma(granero, adyacentes[i]));
 			despegado++;
 		}
@@ -135,11 +120,11 @@ bool Sistema::listoParaCosechar() const {
     while (i < _campo.dimensiones().ancho * _campo.dimensiones().largo){
         Posicion pos {i % _campo.dimensiones().ancho, i / _campo.dimensiones().ancho};
         //std::cout<<"pos x "<<pos.x<<"  pos y  "<<pos.y<<"  i  "<<i<< std::endl;
-        if (_campo.contenido(pos)==Cultivo &&
-            _estado.parcelas[pos.x][pos.y] == ListoParaCosechar) listas++;
+        if (_campo.contenido(pos) == Cultivo && _estado.parcelas[pos.x][pos.y] == ListoParaCosechar) {
+          listas++;
+        }
         i++;
     }
-    //std::cout<<"Listos para cos  "<<listas<<"  de  "<<total<<std::endl;
     return 10 * listas >= 9 * total;
 }
 
@@ -159,23 +144,21 @@ void Sistema::aterrizarYCargarBaterias(Carga b) {
 
 void Sistema::fertilizarPorFilas() {
 	unsigned int i = 0;
-
 	while (i < _enjambre.size()){
+		while(_enjambre[i].bateria()>0 &&
+          _enjambre[i].enVuelo() &&
+          hayProducto(_enjambre[i].productosDisponibles(), Fertilizante) &&
+          _campo.contenido(_enjambre[i].posicionActual()) == Cultivo){
 
-
-		while(_enjambre[i].bateria()>0 && _enjambre[i].enVuelo() && hayProducto(_enjambre[i].productosDisponibles(), Fertilizante) && _campo.contenido(_enjambre[i].posicionActual()) == Cultivo){
-
-			if((estadoDelCultivo(_enjambre[i].posicionActual()) == RecienSembrado || estadoDelCultivo(_enjambre[i].posicionActual()) == EnCrecimiento) ){
+			if((estadoDelCultivo(_enjambre[i].posicionActual()) == RecienSembrado || estadoDelCultivo(_enjambre[i].posicionActual()) == EnCrecimiento)){
 				_estado.parcelas[_enjambre[i].posicionActual().x][_enjambre[i].posicionActual().y] = ListoParaCosechar;
 				_enjambre[i].sacarProducto(Fertilizante);
 			}
-
-
 			//si queda bateria y no se sale del rango, avanza
-			if(_enjambre[i].bateria() > 0 && enRango(*this, Posicion {_enjambre[i].posicionActual().x, _enjambre[i].posicionActual().y - 1} ) ){
+			if(_enjambre[i].bateria() > 0 && enRango(*this, Posicion {_enjambre[i].posicionActual().x, _enjambre[i].posicionActual().y - 1} )){
 				_enjambre[i].moverA(Posicion {_enjambre[i].posicionActual().x, _enjambre[i].posicionActual().y - 1});
 				_enjambre[i].setBateria(_enjambre[i].bateria() - 1);
-				//si queda bateria, avanza. no estoy seguro si solo gasta bateria si la parcela que sigue esta en NoCensado
+				//si queda bateria, avanza. no estoy seguro si solo gasta bateria si la parcela que sigue esta en NoSensado
 			}
 		}
 		i++;
@@ -206,6 +189,7 @@ void Sistema::volarYSensar(const Drone &d) {
     _estado.parcelas[seMueveA.x][seMueveA.y] = RecienSembrado;
   }
   else {
+    //Cada guarda chequea si se cumplen todas las condiciones para poder aplicar el producto correspondiente.
     if((comoEsta == RecienSembrado || comoEsta == EnCrecimiento) && hayProducto(_enjambre[indice].productosDisponibles(), Fertilizante)){
       comoEsta = EnCrecimiento;
       _enjambre[indice].sacarProducto(Fertilizante);
