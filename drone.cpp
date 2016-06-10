@@ -74,15 +74,15 @@ Secuencia <InfoVueloCruzado> Drone::vuelosCruzados(const Secuencia<Drone> &ds) {
     Secuencia<InfoVueloCruzado> res;
 	if (ds.empty()) return res;	//me aseguro que no se rompe lo siguiente
 
-	Secuencia<Posicion> posCruzadas = posConCruces(ds);
+	Secuencia<Posicion> posCruzadas = posConCruces(ds);    // Lista de pos donde hubo cruces sin repetidos
 	unsigned int i = 0;
-	while ( i < posCruzadas.size()){
+	while ( i < posCruzadas.size()){   // Itera por todas las posiciones y agrega a res dicha pos con la cantidad de cruces que hubo en ella
 		res.push_back(InfoVueloCruzado{posCruzadas[i], cantidadDronesCruzados(posCruzadas[i], ds)});
 		i++;
 	}
-	std::sort(res.begin(), res.end(), ordenCruzados);
+	std::sort(res.begin(), res.end(), ordenCruzados);  // Ordena la lista de manera ascendiente de acuerdo a la cantidad de cruces (es decir al segundo elemento de la tupla)
 
-    return res; //esto no estoy seguro, pero como no habia ningun return lo puse (Teo)
+    return res;
 }
 
 void Drone::mostrar(std::ostream &os) const {

@@ -154,6 +154,7 @@ Secuencia<Posicion> movimientos(){
 }
 
 Secuencia<Posicion> posConCruces(const Secuencia<Drone>& ds) {
+    // Devuelve una lista de posiciones en las que hubo cruces sin elementos repetidos.
 	Secuencia<Posicion> res;
 
 	unsigned int i = 0;
@@ -184,22 +185,20 @@ Secuencia<Posicion> posConCruces(const Secuencia<Drone>& ds) {
 }
 
 bool const ordenCruzados(const InfoVueloCruzado& a, const InfoVueloCruzado& b) {
-	return a.cantidadCruces <= b.cantidadCruces;
+	return a.cantidadCruces <= b.cantidadCruces;       // Comparador para el ordenamiento de la lista de vuelsoCruzados. Ordena ascendiente por cantidad de cruces
 }
 
 int cantidadDronesCruzados(Posicion pos, const Secuencia<Drone>& ds) {
 	int cant = 0;
 	unsigned int i = 0;
-	while(i < ds.size()){
+	while(i < ds.size()){                          // Itero por todos los drones
 		unsigned int j = 0;
-		while(j < ds[i].vueloRealizado().size()){
+		while(j < ds[i].vueloRealizado().size()){  // y por los vuelosRealizados
 			if (ds[i].vueloRealizado()[j] == pos && seCruzoConOtro(ds[i], ds, j)) cant ++;
-			j++;
-		}
+			j++;                                   // si en pos se cruzó con otro drone, sumo uno al contador de cruces
+		}                                          // seCruzoConOtro se encarga de no contar los "cruces" de un drone consigo mismo
 		i++;
 	}
-
-
 	/*
 	for (Drone d : ds) {
 		for (int i = 0; i < d.vueloRealizado().size(); i++) {
@@ -208,13 +207,12 @@ int cantidadDronesCruzados(Posicion pos, const Secuencia<Drone>& ds) {
 		}
 	}
 	*/
-	return cant; // / 2;	//porque cada cruce lo suma 2 veces por par de drones cruzados
-                        //le saque el /2 porque sino no andaba, a mi tambien me confunde, pero asi paso los tests bien
+	return cant;
 
 }
 
 bool seCruzoConOtro (Drone d, const Secuencia<Drone>& ds, int i) {
-
+    // Devuelve true si d se cruzó con otro drone en ds (distinto) en el "momento" i.
 	unsigned int j = 0;
 	while (j < ds.size()){
 		if(ds[j] != d && d.vueloRealizado()[i] == ds[j].vueloRealizado()[i]) return true;
